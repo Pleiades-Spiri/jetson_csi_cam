@@ -1,0 +1,19 @@
+<launch>
+
+  <group ns="stereo">
+  	<node name="stereo_image_proc" pkg="stereo_image_proc" type="stereo_image_proc" output="screen">
+      <param name="approximate_sync" value="true" />
+      <param name="queue_size" value="200" />
+      <param name="correlation_window_size" value="11" />
+      <param name="disparity_range" value="48" />
+      <param name="min_disparity" value="15" />
+      <param name="prefilter_cap" value="29" />
+      <param name="prefilter_size" value="125" />
+      <param name="speckle_range" value="24" />
+      <param name="speckle_size" value="142" />
+      <param name="texture_threshold" value="1040" />
+  	</node>
+  </group>
+
+
+</launch>

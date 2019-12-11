@@ -11,3 +11,12 @@ gst-launch-1.0 nvcamerasrc fpsRange="30 30" intent=3 ! nvvidconv flip-method=2 !
 
 #Reciever
 gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! h264parse ! avdec_h264! autovideosink -e
+
+#Synchornized run
+#Source https://devtalk.nvidia.com/default/topic/1052749/jetson-tx1/how-to-capture-video-simultaneously-with-two-cameras-using-gstreamer-/
+gst-launch-1.0 \
+multiqueue max-size-buffers=1 name=mqueue \
+nvcamerasrc sensor-id=0 fpsRange="30 30" intent=3 wbmode=5 ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1' ! mqueue.sink_1 \
+nvcamerasrc sensor-id=1 fpsRange="30 30" intent=3 wbmode=5 ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1' ! mqueue.sink_2 \
+mqueue.src_1 ! omxh264enc control-rate=2 bitrate=4000000 ! 'video/x-h264, stream-format=(string)byte-stream' ! h264parse ! rtph264pay mtu=1400 ! udpsink host=192.168.1.92 port=5000 sync=false async=false \
+mqueue.src_2 ! omxh264enc control-rate=2 bitrate=4000000 ! 'video/x-h264, stream-format=(string)byte-stream' ! h264parse ! rtph264pay mtu=1400 ! udpsink host=192.168.1.92 port=6000 sync=false async=false 

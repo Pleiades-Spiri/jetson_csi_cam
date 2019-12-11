@@ -1,5 +1,10 @@
 <launch>
 
+  <!-- On Spiri run the transmitting command as below-->
+
+  <!--gst-launch-1.0 multiqueue name=mqueue nvcamerasrc sensor-id=0 fpsRange="30 30" intent=3 ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1' ! mqueue.sink_1 nvcamerasrc sensor-id=1 fpsRange="30 30" intent=3 ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1' ! mqueue.sink_2 mqueue.src_1 ! omxh264enc control-rate=2 bitrate=4000000 ! 'video/x-h264, stream-format=(string)byte-stream' ! h264parse ! rtph264pay mtu=1400 ! udpsink host=192.168.179.60 port=5000 sync=false async=false mqueue.src_2 ! omxh264enc control-rate=2 bitrate=4000000 ! 'video/x-h264, stream-format=(string)byte-stream' ! h264parse ! rtph264pay mtu=1400 ! udpsink host=192.168.179.60 port=6000 sync=false async=false 
+  -->
+
   <!-- Command Line Arguments -->
   <arg name="sync_sink" default="true" />                    <!-- Synchronize the app sink -->
   <arg name="width" default="1280" />                        <!-- Image Width -->
@@ -23,9 +28,25 @@
       <param name="right/image_height" type="int" value="$(arg height)" />
       <param name="right/target_fps" type="int" value="$(arg fps)" />
       <param name="camera_info_url" value="package://jetson_csi_cam/calibration-right.yaml" />
-      <param name="image_encoding_" value="jpeg" />
+      <!--<param name="image_encoding_" value="jpeg" />-->
       <remap from="camera/image_raw" to="right/image_raw" />
       <remap from="camera/camera_info" to="right/camera_info" />
+      <remap from="set_camera_info" to="camera_info" />
+    </node>
+    <node name="left" pkg="gscam" type="gscam" output="screen">
+      <param name="camera_name" value="right" />
+      <!--<param name="gscam_config" value="nvcamerasrc sensor-id=0 auto-exposure=1 aeLock=1 ! video/x-raw(memory:NVMM), width=(int)$(arg width), height=(int)$(arg height), format=(string)I420,framerate=(fraction)$(arg fps)/1 ! nvvidconv flip-method=2 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR" />-->
+      <param name="gscam_config" value=" udpsrc port=6000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw, format=(string)RGB"/> 
+      <param name="camera_id" value="1" />
+      <param name="frame_id" value="left_link" />
+      <param name="sync_sink" value="true" />
+      <param name="left/image_width" type="int" value="$(arg width)" />
+      <param name="left/image_height" type="int" value="$(arg height)" />
+      <param name="left/target_fps" type="int" value="$(arg fps)" />
+      <param name="camera_info_url" value="package://jetson_csi_cam/calibration-left.yaml" />
+      <!--<param name="image_encoding_" value="jpeg" />-->
+      <remap from="camera/image_raw" to="left/image_raw" />
+      <remap from="camera/camera_info" to="left/camera_info" />
       <remap from="set_camera_info" to="camera_info" />
     </node>
 

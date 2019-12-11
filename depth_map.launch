@@ -1,0 +1,11 @@
+<launch>
+
+<group ns="stereo">
+  <node pkg="nodelet" type="nodelet" name="stereo_proc"  args="manager" output="screen"/>
+  		<remap from="stereo/disparity" to="disparity" />
+  <node name="disparity_image_proc" pkg="nodelet" type="nodelet" args="load disparity_image_proc/depth_image stereo_proc" output="screen">
+  	
+  </node>
+</group>
+
+</launch>
