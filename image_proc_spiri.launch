@@ -1,0 +1,13 @@
+<launch>
+
+  <group ns="stereo/left">
+  	<node name="image_proc_left" pkg="image_proc" type="image_proc" output="screen">
+  	</node>
+  </group>
+
+  <group ns="stereo/right">
+	<node name="image_proc_right" pkg="image_proc" type="image_proc" output="screen">
+	</node>	
+  </group>
+
+</launch>
