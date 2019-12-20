@@ -1,5 +1,5 @@
-image_width: 1920
-image_height: 1080
+image_width: 320
+image_height: 240
 camera_name: left
 camera_matrix:
   rows: 3
