@@ -10,7 +10,8 @@
   <arg name="width" default="320" />                        <!-- Image Width -->
   <arg name="height" default="240" />                        <!-- Image Height -->
   <arg name="fps" default="30" />                            <!-- Desired framerate -->
-
+  <arg name="calibration_right_file" default="right_320x240.yaml"/>
+  <arg name="calibration_left_file" default="left_320x240.yaml"/>	
   <!-- Make arguments available to parameter server -->
   <param name="image_width" type="int" value="$(arg width)" />
   <param name="image_height" type="int" value="$(arg height)" />
@@ -20,14 +21,14 @@
     <node name="right" pkg="gscam" type="gscam" output="screen">
       <param name="camera_name" value="right" />
       <!--<param name="gscam_config" value="nvcamerasrc sensor-id=0 auto-exposure=1 aeLock=1 ! video/x-raw(memory:NVMM), width=(int)$(arg width), height=(int)$(arg height), format=(string)I420,framerate=(fraction)$(arg fps)/1 ! nvvidconv flip-method=2 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR" />-->
-      <param name="gscam_config" value=" udpsrc port=5000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw, format=(string)RGB"/> 
+      <param name="gscam_config" value=" udpsrc port=5000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw, format=(string)RGB"/>
       <param name="camera_id" value="0" />
       <param name="frame_id" value="right_link" />
       <param name="sync_sink" value="true" />
       <param name="right/image_width" type="int" value="$(arg width)" />
       <param name="right/image_height" type="int" value="$(arg height)" />
       <param name="right/target_fps" type="int" value="$(arg fps)" />
-      <param name="camera_info_url" value="package://jetson_csi_cam/right_320x240.yaml" />
+      <param name="camera_info_url" value="package://jetson_csi_cam/$(arg calibration_right_file)" />
       <!--<param name="image_encoding_" value="jpeg" />-->
       <remap from="camera/image_raw" to="right/image_raw" />
       <remap from="camera/camera_info" to="right/camera_info" />
@@ -36,19 +37,24 @@
     <node name="left" pkg="gscam" type="gscam" output="screen">
       <param name="camera_name" value="left" />
       <!--<param name="gscam_config" value="nvcamerasrc sensor-id=0 auto-exposure=1 aeLock=1 ! video/x-raw(memory:NVMM), width=(int)$(arg width), height=(int)$(arg height), format=(string)I420,framerate=(fraction)$(arg fps)/1 ! nvvidconv flip-method=2 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR" />-->
-      <param name="gscam_config" value=" udpsrc port=6000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw, format=(string)RGB"/> 
+      <param name="gscam_config" value=" udpsrc port=6000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw, format=(string)RGB"/>
       <param name="camera_id" value="1" />
       <param name="frame_id" value="left_link" />
       <param name="sync_sink" value="true" />
       <param name="left/image_width" type="int" value="$(arg width)" />
       <param name="left/image_height" type="int" value="$(arg height)" />
       <param name="left/target_fps" type="int" value="$(arg fps)" />
-      <param name="camera_info_url" value="package://jetson_csi_cam/left_320x240.yaml" />
+      <param name="camera_info_url" value="package://jetson_csi_cam/$(arg calibration_left_file)" />
       <!--<param name="image_encoding_" value="jpeg" />-->
       <remap from="camera/image_raw" to="left/image_raw" />
       <remap from="camera/camera_info" to="left/camera_info" />
       <remap from="set_camera_info" to="camera_info" />
     </node>
+
+    <!--<node pkg="tf" type="static_transform_publisher" name="tf_front_right_camera"
+          args="0 2.85 0 -1.57 0 -1.57 fcu front_camera_link 10"/>
+    <node pkg="tf" type="static_transform_publisher" name="tf_front_left_camera"
+          args="0 -2.85 0 -1.57 0 -1.57 fcu front_camera_link 10"/>-->
 
   </group>
 

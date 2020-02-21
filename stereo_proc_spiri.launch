@@ -13,6 +13,10 @@
 	      <param name="speckle_size" value="142" />
 	      <param name="texture_threshold" value="1040" />
   	</node>
+  	<node name="disparity_to_image" pkg="topic_tools" type="transform" output="screen"
+	      args="/stereo/disparity /stereo/disparity_image sensor_msgs/Image 'm.image'">
+	</node>
+
   </group>
 
 
