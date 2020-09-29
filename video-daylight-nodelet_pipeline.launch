@@ -1,0 +1,28 @@
+<launch>
+
+  <!-- start the driver in a camera_nodelet_manager process -->
+  <include file="$(find jetson_csi_cam)/video-daylight-nodelet.launch" >
+  </include>
+
+  <!-- Bayer color decoding -->
+  <node pkg="nodelet" type="nodelet" name="image_proc_debayer"
+	args="load image_proc/debayer camera_nodelet_manager">
+    <remap from="image_raw" to="left/image_raw" />
+      <remap from="camera_info" to="left/camera_info" />
+  </node>
+
+  <!-- mono rectification -->
+  <node pkg="nodelet" type="nodelet" name="image_proc_rect"
+	args="load image_proc/rectify camera_nodelet_manager">
+    <remap from="image_raw" to="left/image_raw" />
+      <remap from="camera_info" to="left/camera_info" />
+  </node>
+
+  <!-- color rectification -->
+  <node pkg="nodelet" type="nodelet" name="image_proc_rect_color"
+	args="load image_proc/rectify camera_nodelet_manager">
+    <remap from="image_raw" to="left/image_raw" />
+      <remap from="camera_info" to="left/camera_info" />
+  </node>
+
+</launch>
