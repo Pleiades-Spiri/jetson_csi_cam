@@ -1,8 +1,8 @@
 <launch>
   <!-- <arg name="DEVICE" default="/dev/video0"/> -->
   <arg name="sync_sink" default="true" />                    <!-- Synchronize the app sink -->
-  <arg name="width" default="320" />                        <!-- Image Width -->
-  <arg name="height" default="240" />                        <!-- Image Height -->
+  <arg name="width" default="1280" />                        <!-- Image Width -->
+  <arg name="height" default="720" />                        <!-- Image Height -->
   <arg name="fps" default="20" />                            <!-- Desired framerate -->
 
   <!-- Make arguments available to parameter server -->
@@ -17,7 +17,7 @@
 
     <node pkg="nodelet" type="nodelet" name="GSCamNodeletLeft" args="load gscam/GSCamNodelet standalone_nodelet respawn:=true" output="screen">
       <param name="camera_name" value="left"/>
-      <param name="camera_info_url" value="package://jetson_csi_cam/left_320x240.yaml"/>
+      <param name="camera_info_url" value="package://jetson_csi_cam/left_1280x720.yaml"/>
       <param name="gscam_config" value="nvarguscamerasrc sensor-id=1 aelock=true awblock=true ! video/x-raw(memory:NVMM), width=(int)$(arg width), height=(int)$(arg height), format=(string)NV12,framerate=(fraction)$(arg fps)/1 ! nvvidconv flip-method=2  ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR" />
       <param name="frame_id" value="left_link"/>
       <param name="sync_sink" value="true"/>
@@ -31,7 +31,7 @@
 
     <node pkg="nodelet" type="nodelet" name="GSCamNodeletRight" args="standalone gscam/GSCamNodelet" output="screen">
       <param name="camera_name" value="right"/>
-      <param name="camera_info_url" value="package://jetson_csi_cam/right_320x240.yaml"/>
+      <param name="camera_info_url" value="package://jetson_csi_cam/right_1280x720.yaml"/>
       <param name="gscam_config" value="nvarguscamerasrc sensor-id=0 aelock=true awblock=true ! video/x-raw(memory:NVMM), width=(int)$(arg width), height=(int)$(arg height), format=(string)NV12,framerate=(fraction)$(arg fps)/1 ! nvvidconv flip-method=2  ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR" />
       <param name="frame_id" value="right_link"/>
       <param name="sync_sink" value="true"/>
