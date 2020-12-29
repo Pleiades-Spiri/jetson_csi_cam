@@ -70,6 +70,10 @@
 	      respawn="false"  output="screen">
         <param name="approximate_sync" value="true" />
     </node>-->
+    <node pkg="nodelet" type="nodelet" name="Image2RTSPNodelet" args="load image2rtsp/Image2RTSPNodelet standalone_nodelet --no-bond" output="screen">
+    <!-- Read the stream setup file -->
+        <rosparam command="load" file="$(find ros_rtsp)/config/stream_setup.yaml" />
+    </node>
    
   </group>
 
