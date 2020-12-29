@@ -3,7 +3,13 @@
   <arg name="sync_sink" default="true" />                    <!-- Synchronize the app sink -->
   <arg name="width" default="320" />                        <!-- Image Width -->
   <arg name="height" default="240" />                        <!-- Image Height -->
-  <arg name="fps" default="20" />                            <!-- Desired framerate -->
+  <arg name="fps" default="20" />  
+  <arg name="respawn" default="false" />
+  <arg name="left" default="left" />
+  <arg name="right" default="right" />
+  <arg name="approximate_sync" default="true" />                          <!-- Desired framerate -->
+  <arg     if="$(arg respawn)" name="bond" value="" />
+  <arg unless="$(arg respawn)" name="bond" value="--no-bond" />
 
   <!-- Make arguments available to parameter server -->
   <param name="image_width" type="int" value="$(arg width)" />
@@ -74,7 +80,15 @@
     <!-- Read the stream setup file -->
         <rosparam command="load" file="$(find ros_rtsp)/config/stream_setup.yaml" />
     </node>
+    <include file="$(find gpu_stereo_image_proc)/launch/libsgm_stereo_image_proc.launch">
+        <arg name="manager" value="/stereo/standalone_nodelet"/>
+    </include>
+    
    
   </group>
+  
+  
+  
+  
 
 </launch>
